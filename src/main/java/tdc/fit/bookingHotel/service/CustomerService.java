@@ -64,6 +64,20 @@ public class CustomerService {
 
         return ResponseEntity.ok(customerRepository.save(customer));
     }
+
+    public  ResponseEntity<?> createCustomerNew(CustomerDTO customerDTO) {
+
+        // Gán User cho Customer (không lấy từ client nữa)
+            Customer customer = new Customer();
+        customer.setFullname(customerDTO.getFullName());
+        customer.setEmail(customerDTO.getEmail());
+        customer.setPhone(customerDTO.getPhone());
+        customer.setAddress(customerDTO.getAddress());
+        customer.setCccd(customerDTO.getCccd());
+
+        return ResponseEntity.ok(customerRepository.save(customer));
+    }
+
     public  ResponseEntity<?> createCustomer(Long id ) {
     	// Lấy username từ Authentication
      
@@ -87,6 +101,16 @@ public class CustomerService {
         customer.setPhone(customerDTO.getPhone());
         return ResponseEntity.ok(customerRepository.save(customer));
     }
+
+    public ResponseEntity<?> deleteCustomer(Long customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
+        customerRepository.delete(customer);
+
+        return ResponseEntity.ok("Customer deleted successfully");
+    }
+
 
     // Xóa một customer
 //    @PreAuthorize("hasPermission(#customerId, 'delete')")

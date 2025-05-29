@@ -14,7 +14,7 @@ import tdc.fit.bookingHotel.repository.HotelierRepository;
 
 
 
-@PreAuthorize("hasAuthority('ROLE_SUPERADMIN') or hasAuthority('ROLE_ADMIN') ")
+//@PreAuthorize("hasAuthority('ROLE_SUPERADMIN') or hasAuthority('ROLE_ADMIN') ")
 @Service
 public class HotelierService {
 

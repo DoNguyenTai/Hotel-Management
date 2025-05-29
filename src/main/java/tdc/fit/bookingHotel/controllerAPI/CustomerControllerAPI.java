@@ -52,6 +52,11 @@ public class CustomerControllerAPI {
 
 		return customerService.createCustomer(customer,authentication);
 	}
+	@PostMapping("/new-create")
+	public ResponseEntity<?> create(@RequestBody CustomerDTO customerDTO) {
+
+		return customerService.createCustomerNew(customerDTO);
+	}
 	@PostMapping("/created/{id}")
 	public ResponseEntity<?> create(@PathVariable Long id) {
 
@@ -73,15 +78,10 @@ public class CustomerControllerAPI {
 		return ResponseEntity.ok(customerService.editCustomerByUserId(id, customerDTO));
 	}
 
-//	    @DeleteMapping("/{id}")
-//	    public ResponseEntity<Void> deleteHotel(@PathVariable Long id) {
-//	        return hotelRepository.findById(id)
-//	                .map(hotel -> {
-//	                    hotelRepository.delete(hotel);
-//	                    return ResponseEntity.ok().<Void>build();
-//	                })
-//	                .orElseGet(() -> ResponseEntity.notFound().build());
-//	    }
+	    @DeleteMapping("/{id}")
+	    public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
+	        return ResponseEntity.ok(customerService.deleteCustomer(id));
+	    }
 
 //	@PostMapping("/register")
 //	public Customer register(@RequestBody User user) {
