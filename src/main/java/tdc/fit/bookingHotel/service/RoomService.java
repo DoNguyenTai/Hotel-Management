@@ -65,16 +65,7 @@ public class RoomService {
 	}
 
 	public ResponseEntity<?> createRoom(String roomNumber, Integer roomTypeId, BigDecimal price, int capacity,
-			String description, Long hotelId, MultipartFile image, Authentication authentication) {
-		// 1. Xác thực và lấy Hotelier từ người dùng hiện tại
-		String username = authentication.getName();
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-		Hotelier hotelier = hotelierRepository.findByUserId(user);
-		if (hotelier == null) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không có quyền tạo phòng.");
-		}
+			String description, Long hotelId, MultipartFile image) {
 
 		// 2. Validate các tham số đầu vào
 		if (roomNumber == null || roomNumber.isBlank()) {
@@ -94,9 +85,6 @@ public class RoomService {
 		Hotel hotel = hotelRepository.findById(hotelId)
 				.orElseThrow(() -> new EntityNotFoundException("Hotel not found."));
 
-		if (!hotel.getHotelier().getHotelierId().equals(hotelier.getHotelierId())) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn chỉ có thể tạo phòng cho khách sạn của bạn.");
-		}
 
 		// 4. Xử lý file ảnh
 		String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
@@ -145,16 +133,9 @@ public class RoomService {
 	}
 
 	public ResponseEntity<?> updateRoom(Long id, String roomNumber, Integer roomTypeId, BigDecimal price, int capacity,
-			String description, Long hotelId, String status, @RequestParam(required = false) MultipartFile image,
-			Authentication authentication) {
+			String description, Long hotelId, String status, @RequestParam(required = false) MultipartFile image
+			) {
 		// 1. Xác thực người dùng
-		String username = authentication.getName();
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-		Hotelier hotelier = hotelierRepository.findByUserId(user);
-		if (hotelier == null) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không có quyền cập nhật phòng.");
-		}
 
 		// 2. Validate đầu vào
 		if (roomNumber == null || roomNumber.isBlank()) {
@@ -170,13 +151,7 @@ public class RoomService {
 		// 3. Lấy Room
 		Room room = roomRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Room not found."));
 
-		// 4. Kiểm tra hotel sở hữu
-		Hotel hotel = hotelRepository.findById(hotelId)
-				.orElseThrow(() -> new EntityNotFoundException("Hotel not found."));
-		if (!hotel.getHotelier().getHotelierId().equals(hotelier.getHotelierId())) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN)
-					.body("Bạn chỉ được phép sửa phòng thuộc khách sạn của mình.");
-		}
+
 
 		// 5. Lấy roomType
 		RoomType roomType = roomTypeRepository.findById(roomTypeId)
@@ -200,6 +175,7 @@ public class RoomService {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save image.");
 			}
 		}
+		Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new EntityNotFoundException("Hotel not found."));
 
 		// 7. Cập nhật thông tin phòng
 		room.setRoomNumber(roomNumber);

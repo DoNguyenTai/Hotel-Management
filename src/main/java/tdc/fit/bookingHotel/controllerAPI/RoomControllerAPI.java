@@ -52,23 +52,18 @@ public class RoomControllerAPI {
             @RequestParam int capacity,
             @RequestParam String description,
             @RequestParam Long hotelId,
-            Authentication authentication, 
             @RequestParam(required = false) MultipartFile image
        ) {
 
-        return ResponseEntity.ok(roomService.createRoom(roomNumber,roomTypeId,price,capacity,description,hotelId,image,authentication));
+        return ResponseEntity.ok(roomService.createRoom(roomNumber,roomTypeId,price,capacity,description,hotelId,image));
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> find(@PathVariable Long id) {
         return ResponseEntity.ok(roomService.getRoomById(id));
     }
-    
-    
-    
-    @DeleteMapping("/{id}")
-    public void deleteRoom(@PathVariable Long id) {
-    	ResponseEntity.ok(roomService.deleteRoom(id));
-    }
+
+
+
     
     @PutMapping(value="/{id}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> updateRoom(  
@@ -80,10 +75,14 @@ public class RoomControllerAPI {
             @RequestParam String description,
             @RequestParam Long hotelId,
             @RequestParam String status,
-            @RequestParam(required = false) MultipartFile image,
-            Authentication authentication
+            @RequestParam(required = false) MultipartFile image
             ) {
-    	return ResponseEntity.ok(roomService.updateRoom(id,roomNumber,roomTypeId,price,capacity,description,hotelId,status,image,authentication));
+    	return ResponseEntity.ok(roomService.updateRoom(id,roomNumber,roomTypeId,price,capacity,description,hotelId,status,image));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRoom(@PathVariable Long id) {
+        return ResponseEntity.ok(roomService.deleteRoom(id));
     }
 
     
